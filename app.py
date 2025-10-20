@@ -48,17 +48,8 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    import os
     port = int(os.environ.get("PORT", 5000))
-
-    # ✅ Only use ngrok for local development
-    if os.environ.get("RENDER") != "true":
-        try:
-            from pyngrok import ngrok
-            ngrok.set_auth_token("34HuQjXZnGNKnmf7K0jo1FQZis2_Yq8EHrWPNxSu6yLCK7tv")
-            public_url = ngrok.connect(port).public_url
-            print(f"🚀 Ngrok tunnel running at: {public_url}")
-        except Exception as e:
-            print("⚠️ Ngrok not started:", e)
-
     app.run(host="0.0.0.0", port=port)
+
