@@ -1,16 +1,10 @@
-
-from pyngrok import ngrok
-
-ngrok.set_auth_token("34HuQjXZnGNKnmf7K0jo1FQZis2_Yq8EHrWPNxSu6yLCK7tv")
-
-
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # ✅ Import CORS
+from flask_cors import CORS
 import numpy as np
 import pandas as pd
 import joblib
 import tensorflow as tf
-from pyngrok import ngrok
+import os
 
 app = Flask(__name__)
 CORS(app)  # ✅ Enable CORS for all routes
@@ -19,6 +13,7 @@ CORS(app)  # ✅ Enable CORS for all routes
 model = tf.keras.models.load_model("upi_fraud_cnn.h5")
 scaler = joblib.load("scaler.pkl")
 le = joblib.load("label_encoder.pkl")
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -52,7 +47,18 @@ def predict():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 if __name__ == '__main__':
-    public_url = ngrok.connect(5000)
-    print(f"🚀 Public URL: {public_url}")
-    app.run(port=5000)
+    port = int(os.environ.get("PORT", 5000))
+
+    # ✅ Only use ngrok for local development
+    if os.environ.get("RENDER") != "true":
+        try:
+            from pyngrok import ngrok
+            ngrok.set_auth_token("34HuQjXZnGNKnmf7K0jo1FQZis2_Yq8EHrWPNxSu6yLCK7tv")
+            public_url = ngrok.connect(port).public_url
+            print(f"🚀 Ngrok tunnel running at: {public_url}")
+        except Exception as e:
+            print("⚠️ Ngrok not started:", e)
+
+    app.run(host="0.0.0.0", port=port)
