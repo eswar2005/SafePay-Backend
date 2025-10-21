@@ -17,7 +17,7 @@ le = joblib.load("label_encoder.pkl")
 @app.route('/')
 def home():
     return "Flask API is running!"
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['POST','GET'])
 def predict():
     if request.method == 'GET':
         return jsonify({"message": "Send a POST request with transaction data."})
