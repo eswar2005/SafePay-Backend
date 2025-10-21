@@ -14,7 +14,9 @@ model = tf.keras.models.load_model("upi_fraud_cnn.h5")
 scaler = joblib.load("scaler.pkl")
 le = joblib.load("label_encoder.pkl")
 
-
+@app.route('/')
+def home():
+    return "Flask API is running!"
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
