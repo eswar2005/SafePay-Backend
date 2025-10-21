@@ -19,6 +19,8 @@ def home():
     return "Flask API is running!"
 @app.route('/predict', methods=['POST'])
 def predict():
+    if request.method == 'GET':
+        return jsonify({"message": "Send a POST request with transaction data."})
     try:
         data = request.get_json(force=True)
         df = pd.DataFrame([data])
